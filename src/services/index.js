@@ -7,4 +7,6 @@ export const getTodos = async () => {
 export const createTodo = async (payload) => {
   return await axios.post('/todo', payload);
 };
-
+export const updateTodos = async (id) => {
+  return await axios.patch(`/todo/${id}`);
+};
