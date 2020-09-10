@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {ScrollView, FlatList, View} from 'react-native';
+import {ScrollView, FlatList, View, Text} from 'react-native';
 import AddTodo from '../components/AddTodo';
 import TodoItem from '../components/TodoItem';
 import Button from '../components/Button';
@@ -94,7 +94,6 @@ const TodoScreen = () => {
             );
           }}
         />
-
         {state.isVisible ? (
           <View style={{flex: 1}}>
             <AddTodo onAdd={handleAddTodo} visible={state.isVisible} />
