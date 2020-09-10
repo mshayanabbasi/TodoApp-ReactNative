@@ -1,63 +1,56 @@
 import React, {useState} from 'react';
-import {TextInput, TouchableOpacity} from 'react-native';
-import {View, Body, CheckBox, Icon} from 'native-base';
+import {Modal, View} from 'react-native';
+import {Input, Button, Text} from 'react-native-elements';
 
-const AddTodo = ({onBlur, onAdd, onCancelDelete}) => {
+const AddTodo = ({onAdd, visible}) => {
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [completed, setCompleted] = useState(false);
-
   onSubmit = () => {
-    if (title.length > 0) {
-      const obj = {
-        title,
-        completed,
-      };
-      onAdd(obj);
-    }
+    const obj = {
+      title,
+      description,
+      completed,
+    };
+    onAdd(obj);
   };
   return (
-    <View
-      style={{
-        flex: 1,
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingRight: 10,
-        paddingBottom: 5,
-      }}>
-      <CheckBox checked={completed} onPress={() => setCompleted(!completed)} />
-      <Body
+    <Modal visible={visible} animationType="slide">
+      <View
         style={{
           flex: 1,
-          justifyContent: 'flex-start',
-          alignItems: 'flex-start',
-          paddingLeft: 25,
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingRight: 10,
+          paddingBottom: 5,
         }}>
-        <TextInput
+        <Text style={{textDecorationColor: '#e38f04'}} h2>
+          Add Todo
+        </Text>
+        <Input
           style={{width: '90%'}}
           placeholder="title"
-          autoFocus
-          underlineColorAndroid="transparent"
-          underLineColor="transparent"
-          blurOnSubmit
-          onSubmitEditing={onSubmit}
           onChangeText={(value) => setTitle(value)}
           value={title}
           autoCorrect={false}
           autoCapitalize="none"
-          onBlur={onBlur}
         />
-      </Body>
-      <TouchableOpacity
-        onPress={onCancelDelete}
-        style={{paddingLeft: 25, paddingRight: 15}}>
-        <Icon
-          name="trash-outline"
-          color={`${title.length > 0 ? 'black' : 'grey'}`}
-          size={23}
+        <Input
+          style={{width: '90%'}}
+          placeholder="description"
+          onChangeText={(value) => setDescription(value)}
+          value={description}
+          autoCorrect={false}
+          autoCapitalize="none"
         />
-      </TouchableOpacity>
-    </View>
+        <Button
+          onPress={onSubmit}
+          title="Add"
+          buttonStyle={{backgroundColor: '#e38f04'}}
+        />
+      </View>
+    </Modal>
   );
 };
 

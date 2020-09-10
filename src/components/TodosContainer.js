@@ -3,28 +3,14 @@ import {
   ScrollView,
   StyleSheet,
   FlatList,
-  StatusBar,
-  Platform,
+  View,
   ActivityIndicator,
 } from 'react-native';
-import {View} from 'native-base';
 import AddTodo from './AddTodo';
 import TodoItem from './TodoItem';
 import Button from './Button';
 import HeaderComponent from './Header';
-
 import {getTodos, createTodo, deleteTodos, updateTodos} from '../services';
-const styles = StyleSheet.create({
-  row: {
-    top: 15,
-    flex: 1,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-});
 
 const TodosContainer = () => {
   const [state, setState] = useState({
@@ -34,13 +20,15 @@ const TodosContainer = () => {
       deleteLoading: false,
       getTodo: false,
     },
+    isVisible: false,
   });
 
-  const [addingTodo, setAddingTodo] = useState(false);
+  // const [addingTodo, setAddingTodo] = useState(false);
   //didmount
   useEffect(async () => {
     try {
       const todos = await getTodos();
+      console.log(todos);
       if (todos) {
         setState({
           ...state,
@@ -58,6 +46,7 @@ const TodosContainer = () => {
       setState({
         ...state,
         todos: [...state.todos, response.data.todo],
+        isVisible: false,
       });
     } catch (err) {
       console.log('errrr', err.response);
@@ -94,44 +83,33 @@ const TodosContainer = () => {
       console.log('error', err);
     }
   };
-  getAllData = () => {
-    return (
-      <FlatList
-        style={{width: '100%', top: 15}}
-        data={state.todos}
-        keyExtractor={(item) => item._id}
-        renderItem={({item: todo}) => {
-          return (
-            <TodoItem
-              todo={todo}
-              onUpdate={handleUpdate}
-              onDelete={deleteTodo}
-            />
-          );
-        }}
-      />
-    );
-  };
-  const isAndroid = Platform.OS === 'android';
+
   return (
     <View style={{flex: 1}}>
       <HeaderComponent title="Todo App" />
-      {isAndroid ? (
-        <StatusBar backgroundColor="#e38f04" barStyle="light-content" />
-      ) : null}
       <ScrollView>
-        {getAllData(state.todos)}
-        {addingTodo ? (
-          <View style={styles.row}>
-            <AddTodo
-              onCancelDelete={() => setAddingTodo(addingTodo)}
-              onBlur={() => setAddingTodo(addingTodo)}
-              onAdd={handleAddTodo}
-            />
+        <FlatList
+          style={{width: '100%', top: 15}}
+          data={state.todos}
+          keyExtractor={(item) => item._id}
+          renderItem={({item: todo}) => {
+            return (
+              <TodoItem
+                todo={todo}
+                onUpdate={handleUpdate}
+                onDelete={deleteTodo}
+              />
+            );
+          }}
+        />
+
+        {state.isVisible ? (
+          <View style={{flex: 1}}>
+            <AddTodo onAdd={handleAddTodo} visible={state.isVisible} />
           </View>
         ) : null}
       </ScrollView>
-      <Button onPress={() => setAddingTodo(!addingTodo)} />
+      <Button onPress={(value) => setState({...state, isVisible: !value})} />
     </View>
   );
 };
